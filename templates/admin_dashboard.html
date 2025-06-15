@@ -1,0 +1,194 @@
+{% extends "base.html" %}
+
+{% block title %}Admin Dashboard - Disaster Management System{% endblock %}
+
+{% block content %}
+<div class="container">
+    <div class="row mb-4">
+        <div class="col-md-8">
+            <h2><i class="fas fa-tachometer-alt text-primary me-2"></i>Admin Dashboard</h2>
+            <p class="text-muted">Welcome, {{ current_user.username }}! Manage all disaster response activities from this dashboard.</p>
+        </div>
+    </div>
+
+    <!-- Stats Cards -->
+    <div class="row mb-4">
+        <div class="col-md-3 mb-4">
+            <div class="card border-0 shadow-sm h-100 bg-primary text-white">
+                <div class="card-body">
+                    <div class="d-flex justify-content-between align-items-center">
+                        <div>
+                            <h6 class="text-uppercase">Active Disasters</h6>
+                            <h2 class="mb-0">{{ active_disasters|default(0) }}</h2>
+                        </div>
+                        <i class="fas fa-exclamation-triangle fa-3x opacity-50"></i>
+                    </div>
+                </div>
+                <div class="card-footer bg-transparent border-0">
+                    <a href="{{ url_for('disasters') }}" class="text-white text-decoration-none small">View details <i class="fas fa-arrow-right ms-1"></i></a>
+                </div>
+            </div>
+        </div>
+
+        <div class="col-md-3 mb-4">
+            <div class="card border-0 shadow-sm h-100 bg-success text-white">
+                <div class="card-body">
+                    <div class="d-flex justify-content-between align-items-center">
+                        <div>
+                            <h6 class="text-uppercase">Hospitals</h6>
+                            <h2 class="mb-0">{{ hospitals_count|default(0) }}</h2>
+                        </div>
+                        <i class="fas fa-hospital fa-3x opacity-50"></i>
+                    </div>
+                </div>
+                <div class="card-footer bg-transparent border-0">
+                    <a href="{{ url_for('hospitals') }}" class="text-white text-decoration-none small">View details <i class="fas fa-arrow-right ms-1"></i></a>
+                </div>
+            </div>
+        </div>
+
+        <div class="col-md-3 mb-4">
+            <div class="card border-0 shadow-sm h-100 bg-warning text-white">
+                <div class="card-body">
+                    <div class="d-flex justify-content-between align-items-center">
+                        <div>
+                            <h6 class="text-uppercase">Ration Shops</h6>
+                            <h2 class="mb-0">{{ shops_count|default(0) }}</h2>
+                        </div>
+                        <i class="fas fa-store fa-3x opacity-50"></i>
+                    </div>
+                </div>
+                <div class="card-footer bg-transparent border-0">
+                    <a href="{{ url_for('ration_shops') }}" class="text-white text-decoration-none small">View details <i class="fas fa-arrow-right ms-1"></i></a>
+                </div>
+            </div>
+        </div>
+
+        <div class="col-md-3 mb-4">
+            <div class="card border-0 shadow-sm h-100 bg-info text-white">
+                <div class="card-body">
+                    <div class="d-flex justify-content-between align-items-center">
+                        <div>
+                            <h6 class="text-uppercase">Volunteers</h6>
+                            <h2 class="mb-0">{{ volunteers_count|default(0) }}</h2>
+                        </div>
+                        <i class="fas fa-users fa-3x opacity-50"></i>
+                    </div>
+                </div>
+                <div class="card-footer bg-transparent border-0">
+                    <a href="{{ url_for('volunteers') }}" class="text-white text-decoration-none small">View details <i class="fas fa-arrow-right ms-1"></i></a>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="row">
+        <!-- Recent Disasters -->
+        <div class="col-md-6 mb-4">
+            <div class="card border-0 shadow-sm h-100">
+                <div class="card-header bg-white border-0">
+                    <h5 class="card-title mb-0">Recent Disasters</h5>
+                </div>
+                <div class="card-body">
+                    {% if recent_disasters %}
+                        <div class="list-group list-group-flush">
+                            {% for disaster in recent_disasters %}
+                                <div class="list-group-item border-0 px-0">
+                                    <div class="d-flex w-100 justify-content-between">
+                                        <h6 class="mb-1">{{ disaster.name }}</h6>
+                                        <small>
+                                            {% if disaster.status == 'active' %}
+                                                <span class="badge bg-danger">Active</span>
+                                            {% else %}
+                                                <span class="badge bg-success">Resolved</span>
+                                            {% endif %}
+                                        </small>
+                                    </div>
+                                    <p class="mb-1 text-muted small">{{ disaster.location }}</p>
+                                    <small>{{ disaster.date_reported.strftime('%Y-%m-%d') }}</small>
+                                </div>
+                            {% endfor %}
+                        </div>
+                    {% else %}
+                        <p class="text-muted">No recent disasters reported.</p>
+                    {% endif %}
+                </div>
+                <div class="card-footer bg-white">
+                    <a href="{{ url_for('disasters') }}" class="btn btn-sm btn-outline-primary">View All</a>
+                </div>
+            </div>
+        </div>
+
+        <!-- Resource Requests -->
+        <div class="col-md-6 mb-4">
+            <div class="card border-0 shadow-sm h-100">
+                <div class="card-header bg-white border-0">
+                    <h5 class="card-title mb-0">Pending Resource Requests</h5>
+                </div>
+                <div class="card-body">
+                    {% if pending_requests %}
+                        <div class="list-group list-group-flush">
+                            {% for request in pending_requests %}
+                                <div class="list-group-item border-0 px-0">
+                                    <div class="d-flex w-100 justify-content-between">
+                                        <h6 class="mb-1">{{ request.resource_type }}</h6>
+                                        <small>
+                                            <span class="badge bg-warning">Pending</span>
+                                        </small>
+                                    </div>
+                                    <p class="mb-1 text-muted small">{{ request.location }}</p>
+                                    <small>Qty: {{ request.quantity }} | {{ request.date_requested.strftime('%Y-%m-%d') }}</small>
+                                </div>
+                            {% endfor %}
+                        </div>
+                    {% else %}
+                        <p class="text-muted">No pending resource requests.</p>
+                    {% endif %}
+                </div>
+                <div class="card-footer bg-white">
+                    <a href="{{ url_for('resource_requests') }}" class="btn btn-sm btn-outline-primary">View All</a>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Quick Actions -->
+    <div class="row mb-4">
+        <div class="col-12">
+            <div class="card border-0 shadow-sm">
+                <div class="card-header bg-white border-0">
+                    <h5 class="card-title mb-0">Quick Actions</h5>
+                </div>
+                <div class="card-body">
+                    <div class="row g-3">
+                        <div class="col-md-3">
+                            <a href="{{ url_for('add_disaster') }}" class="btn btn-outline-primary d-flex flex-column align-items-center p-3 w-100">
+                                <i class="fas fa-exclamation-triangle fa-2x mb-2"></i>
+                                <span>Report Disaster</span>
+                            </a>
+                        </div>
+                        <div class="col-md-3">
+                            <a href="#" class="btn btn-outline-success d-flex flex-column align-items-center p-3 w-100">
+                                <i class="fas fa-hospital fa-2x mb-2"></i>
+                                <span>Add Hospital</span>
+                            </a>
+                        </div>
+                        <div class="col-md-3">
+                            <a href="#" class="btn btn-outline-warning d-flex flex-column align-items-center p-3 w-100">
+                                <i class="fas fa-store fa-2x mb-2"></i>
+                                <span>Add Ration Shop</span>
+                            </a>
+                        </div>
+                        <div class="col-md-3">
+                            <a href="#" class="btn btn-outline-info d-flex flex-column align-items-center p-3 w-100">
+                                <i class="fas fa-users fa-2x mb-2"></i>
+                                <span>Add Volunteer</span>
+                            </a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %} 

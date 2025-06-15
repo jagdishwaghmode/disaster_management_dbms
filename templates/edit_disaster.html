@@ -1,0 +1,73 @@
+{% extends "base.html" %}
+
+{% block title %}Edit Disaster - Disaster Management System{% endblock %}
+
+{% block content %}
+<div class="container">
+    <div class="row mb-4">
+        <div class="col-md-8">
+            <h2><i class="fas fa-edit text-primary me-2"></i>Edit Disaster</h2>
+            <p class="text-muted">Update disaster information</p>
+        </div>
+        <div class="col-md-4 text-end">
+            <a href="{{ url_for('disasters') }}" class="btn btn-outline-secondary">
+                <i class="fas fa-arrow-left me-1"></i> Back to Disasters
+            </a>
+        </div>
+    </div>
+
+    <div class="row">
+        <div class="col-md-8 mx-auto">
+            <div class="card shadow-sm">
+                <div class="card-header">
+                    <h5 class="mb-0">Disaster Details</h5>
+                </div>
+                <div class="card-body">
+                    <form method="POST">
+                        <div class="mb-3">
+                            <label for="name" class="form-label">Disaster Name</label>
+                            <input type="text" class="form-control" id="name" name="name" value="{{ disaster.name }}" required>
+                        </div>
+                        
+                        <div class="mb-3">
+                            <label for="type" class="form-label">Disaster Type</label>
+                            <select class="form-select" id="type" name="type" required>
+                                <option value="flood" {% if disaster.type == 'flood' %}selected{% endif %}>Flood</option>
+                                <option value="earthquake" {% if disaster.type == 'earthquake' %}selected{% endif %}>Earthquake</option>
+                                <option value="fire" {% if disaster.type == 'fire' %}selected{% endif %}>Fire</option>
+                                <option value="storm" {% if disaster.type == 'storm' %}selected{% endif %}>Storm</option>
+                                <option value="landslide" {% if disaster.type == 'landslide' %}selected{% endif %}>Landslide</option>
+                                <option value="other" {% if disaster.type == 'other' %}selected{% endif %}>Other</option>
+                            </select>
+                        </div>
+                        
+                        <div class="mb-3">
+                            <label for="location" class="form-label">Location</label>
+                            <input type="text" class="form-control" id="location" name="location" value="{{ disaster.location }}" required>
+                        </div>
+                        
+                        <div class="mb-3">
+                            <label for="severity" class="form-label">Severity</label>
+                            <select class="form-select" id="severity" name="severity" required>
+                                <option value="low" {% if disaster.severity == 'low' %}selected{% endif %}>Low</option>
+                                <option value="medium" {% if disaster.severity == 'medium' %}selected{% endif %}>Medium</option>
+                                <option value="high" {% if disaster.severity == 'high' %}selected{% endif %}>High</option>
+                            </select>
+                        </div>
+                        
+                        <div class="mb-3">
+                            <label for="description" class="form-label">Description</label>
+                            <textarea class="form-control" id="description" name="description" rows="4">{{ disaster.description }}</textarea>
+                        </div>
+                        
+                        <div class="d-grid gap-2 d-md-flex justify-content-md-end">
+                            <a href="{{ url_for('disasters') }}" class="btn btn-outline-secondary me-md-2">Cancel</a>
+                            <button type="submit" class="btn btn-primary">Update Disaster</button>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

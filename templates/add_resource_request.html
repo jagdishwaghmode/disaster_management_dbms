@@ -1,0 +1,70 @@
+{% extends "base.html" %}
+
+{% block title %}Submit Resource Request - Disaster Management System{% endblock %}
+
+{% block content %}
+<div class="container">
+    <div class="row mb-4">
+        <div class="col-12">
+            <h2><i class="fas fa-hands-helping text-primary me-2"></i>Submit Resource Request</h2>
+        </div>
+    </div>
+
+    <div class="row">
+        <div class="col-lg-8 mx-auto">
+            <div class="card shadow-sm">
+                <div class="card-body">
+                    <form method="POST">
+                        <div class="mb-3">
+                            <label for="resource_type" class="form-label">Resource Type</label>
+                            <select class="form-select" id="resource_type" name="resource_type" required>
+                                <option value="" selected disabled>Select resource type...</option>
+                                <option value="medical">Medical Supplies</option>
+                                <option value="food">Food & Water</option>
+                                <option value="shelter">Shelter</option>
+                                <option value="clothing">Clothing</option>
+                                <option value="equipment">Equipment</option>
+                                <option value="transportation">Transportation</option>
+                                <option value="other">Other</option>
+                            </select>
+                        </div>
+                        
+                        <div class="mb-3">
+                            <label for="quantity" class="form-label">Quantity Needed</label>
+                            <input type="number" class="form-control" id="quantity" name="quantity" min="1" required>
+                            <div class="form-text">Specify the number of units, packages, or people to be served</div>
+                        </div>
+                        
+                        <div class="mb-3">
+                            <label for="location" class="form-label">Delivery Location</label>
+                            <input type="text" class="form-control" id="location" name="location" required>
+                            <div class="form-text">Provide specific location details (address, area, landmarks)</div>
+                        </div>
+                        
+                        <div class="mb-3">
+                            <label for="requestor_name" class="form-label">Requestor Name</label>
+                            <input type="text" class="form-control" id="requestor_name" name="requestor_name" required>
+                        </div>
+                        
+                        <div class="mb-3">
+                            <label for="contact" class="form-label">Contact Number</label>
+                            <input type="text" class="form-control" id="contact" name="contact" required>
+                        </div>
+                        
+                        <div class="mb-3">
+                            <label for="description" class="form-label">Description</label>
+                            <textarea class="form-control" id="description" name="description" rows="5" required></textarea>
+                            <div class="form-text">Provide details about the resources needed, urgency, and any special requirements</div>
+                        </div>
+                        
+                        <div class="d-grid gap-2 d-md-flex justify-content-md-end">
+                            <a href="{{ url_for('resource_requests') }}" class="btn btn-outline-secondary me-md-2">Cancel</a>
+                            <button type="submit" class="btn btn-primary">Submit Request</button>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %} 

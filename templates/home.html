@@ -1,0 +1,112 @@
+{% extends "base.html" %}
+
+{% block title %}Home - Disaster Management System{% endblock %}
+
+{% block content %}
+<div class="container">
+    <!-- Hero Section -->
+    <div class="row py-5 mb-4 bg-light rounded-3">
+        <div class="col-md-6">
+            <h1 class="display-4 fw-bold text-primary">Disaster Management System</h1>
+            <p class="fs-4">Coordinating emergency response and resource distribution during disasters.</p>
+            {% if not current_user.is_authenticated %}
+                <div class="d-grid gap-2 d-md-flex">
+                    <a href="{{ url_for('login') }}" class="btn btn-primary btn-lg px-4">Login</a>
+                    <a href="{{ url_for('register') }}" class="btn btn-outline-primary btn-lg px-4">Register</a>
+                </div>
+            {% else %}
+                <a href="{{ url_for('dashboard') }}" class="btn btn-primary btn-lg px-4">Go to Dashboard</a>
+            {% endif %}
+        </div>
+        <div class="col-md-6">
+            <img src="{{ url_for('static', filename='images/emergency-response.jpg') }}" alt="Emergency Response" class="img-fluid rounded shadow">
+        </div>
+    </div>
+
+    <!-- Features Section -->
+    <div class="row mb-4">
+        <div class="col-md-4">
+            <div class="card h-100 shadow-sm border-0">
+                <img src="{{ url_for('static', filename='images/medical-aid.jpg') }}" class="card-img-top" alt="Medical Aid" style="height: 200px; object-fit: cover;">
+                <div class="card-body text-center">
+                    <h3 class="card-title h4">Hospital Management</h3>
+                    <p class="card-text">Track hospital capacity and coordinate medical resources during emergencies.</p>
+                </div>
+            </div>
+        </div>
+        <div class="col-md-4">
+            <div class="card h-100 shadow-sm border-0">
+                <img src="{{ url_for('static', filename='images/relief-camp.jpg') }}" class="card-img-top" alt="Relief Camp" style="height: 200px; object-fit: cover;">
+                <div class="card-body text-center">
+                    <h3 class="card-title h4">Ration Distribution</h3>
+                    <p class="card-text">Manage and track essential supplies distribution to affected areas.</p>
+                </div>
+            </div>
+        </div>
+        <div class="col-md-4">
+            <div class="card h-100 shadow-sm border-0">
+                <img src="{{ url_for('static', filename='images/volunteer-work.jpg') }}" class="card-img-top" alt="Volunteer Work" style="height: 200px; object-fit: cover;">
+                <div class="card-body text-center">
+                    <h3 class="card-title h4">Volunteer Coordination</h3>
+                    <p class="card-text">Organize and deploy volunteers where they're needed most.</p>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Statistics Section -->
+    <div class="row mb-4">
+        <div class="col-12">
+            <div class="card shadow-sm border-0">
+                <div class="card-body">
+                    <h3 class="text-center mb-4">Current Statistics</h3>
+                    <div class="row text-center">
+                        <div class="col-md-3">
+                            <div class="mb-3">
+                                <img src="{{ url_for('static', filename='images/rescue-team.jpg') }}" alt="Rescue Team" class="img-fluid rounded-circle mb-3" style="width: 100px; height: 100px; object-fit: cover;">
+                            </div>
+                            <h4>Active Rescue Teams</h4>
+                            <p class="h2 text-primary">{{ rescue_teams_count|default(12) }}</p>
+                        </div>
+                        <div class="col-md-3">
+                            <div class="mb-3">
+                                <img src="{{ url_for('static', filename='images/volunteer-work.jpg') }}" alt="Volunteers" class="img-fluid rounded-circle mb-3" style="width: 100px; height: 100px; object-fit: cover;">
+                            </div>
+                            <h4>Volunteers</h4>
+                            <p class="h2 text-success">{{ volunteers_count|default(150) }}</p>
+                        </div>
+                        <div class="col-md-3">
+                            <div class="mb-3">
+                                <img src="{{ url_for('static', filename='images/relief-camp.jpg') }}" alt="Relief Camps" class="img-fluid rounded-circle mb-3" style="width: 100px; height: 100px; object-fit: cover;">
+                            </div>
+                            <h4>Relief Camps</h4>
+                            <p class="h2 text-info">{{ relief_camps_count|default(8) }}</p>
+                        </div>
+                        <div class="col-md-3">
+                            <div class="mb-3">
+                                <img src="{{ url_for('static', filename='images/medical-aid.jpg') }}" alt="Medical Facilities" class="img-fluid rounded-circle mb-3" style="width: 100px; height: 100px; object-fit: cover;">
+                            </div>
+                            <h4>Medical Facilities</h4>
+                            <p class="h2 text-danger">{{ medical_facilities_count|default(25) }}</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Emergency Contact Section -->
+    <div class="row mb-4">
+        <div class="col-12">
+            <div class="card bg-primary text-white shadow-sm border-0">
+                <div class="card-body text-center py-4">
+                    <h3>Emergency Contact</h3>
+                    <p class="lead mb-3">24/7 Emergency Helpline</p>
+                    <h2 class="display-4 mb-3">112</h2>
+                    <p>For immediate assistance during emergencies</p>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %} 

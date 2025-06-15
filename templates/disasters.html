@@ -1,0 +1,259 @@
+{% extends "base.html" %}
+
+{% block title %}Disasters - Disaster Management System{% endblock %}
+
+{% block content %}
+<div class="container">
+    <div class="row mb-4">
+        <div class="col-md-8">
+            <h2><i class="fas fa-exclamation-triangle text-warning me-2"></i>Disasters</h2>
+            <p class="text-muted">Track and manage disaster incidents</p>
+        </div>
+        <div class="col-md-4 text-end">
+            <a href="{{ url_for('add_disaster') }}" class="btn btn-primary">
+                <i class="fas fa-plus me-1"></i> Report New Disaster
+            </a>
+        </div>
+    </div>
+
+    <!-- Overview Cards -->
+    <div class="row mb-4">
+        <div class="col-md-3">
+            <div class="card bg-primary text-white shadow-sm">
+                <div class="card-body">
+                    <div class="d-flex justify-content-between align-items-center">
+                        <div>
+                            <h6 class="card-title mb-0">Total Disasters</h6>
+                            <h2 class="my-2">{{ disasters|length }}</h2>
+                        </div>
+                        <i class="fas fa-globe-americas fa-2x opacity-50"></i>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="col-md-3">
+            <div class="card bg-warning text-white shadow-sm">
+                <div class="card-body">
+                    <div class="d-flex justify-content-between align-items-center">
+                        <div>
+                            <h6 class="card-title mb-0">Active Disasters</h6>
+                            <h2 class="my-2">{{ disasters|selectattr('status', 'equalto', 'active')|list|length }}</h2>
+                        </div>
+                        <i class="fas fa-exclamation-circle fa-2x opacity-50"></i>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="col-md-3">
+            <div class="card bg-success text-white shadow-sm">
+                <div class="card-body">
+                    <div class="d-flex justify-content-between align-items-center">
+                        <div>
+                            <h6 class="card-title mb-0">Resolved</h6>
+                            <h2 class="my-2">{{ disasters|selectattr('status', 'equalto', 'resolved')|list|length }}</h2>
+                        </div>
+                        <i class="fas fa-check-circle fa-2x opacity-50"></i>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="col-md-3">
+            <div class="card bg-danger text-white shadow-sm">
+                <div class="card-body">
+                    <div class="d-flex justify-content-between align-items-center">
+                        <div>
+                            <h6 class="card-title mb-0">High Severity</h6>
+                            <h2 class="my-2">{{ disasters|selectattr('severity', 'equalto', 'high')|list|length }}</h2>
+                        </div>
+                        <i class="fas fa-radiation-alt fa-2x opacity-50"></i>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Quick Filters -->
+    <div class="row mb-4">
+        <div class="col-12">
+            <div class="card shadow-sm">
+                <div class="card-body">
+                    <form method="GET" class="row g-3">
+                        <div class="col-md-4">
+                            <label class="form-label">Status</label>
+                            <select class="form-select" name="status">
+                                <option value="">All</option>
+                                <option value="active">Active</option>
+                                <option value="resolved">Resolved</option>
+                            </select>
+                        </div>
+                        <div class="col-md-4">
+                            <label class="form-label">Type</label>
+                            <select class="form-select" name="type">
+                                <option value="">All</option>
+                                <option value="flood">Flood</option>
+                                <option value="earthquake">Earthquake</option>
+                                <option value="fire">Fire</option>
+                                <option value="storm">Storm</option>
+                                <option value="landslide">Landslide</option>
+                            </select>
+                        </div>
+                        <div class="col-md-4">
+                            <label class="form-label">Search</label>
+                            <input type="text" class="form-control" name="search" placeholder="Search disasters...">
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Disasters List -->
+    <div class="card shadow-sm">
+        <div class="card-body">
+            {% if disasters %}
+                <div class="table-responsive">
+                    <table class="table table-hover">
+                        <thead class="table-light">
+                            <tr>
+                                <th>Name</th>
+                                <th>Type</th>
+                                <th>Location</th>
+                                <th>Severity</th>
+                                <th>Date Reported</th>
+                                <th>Status</th>
+                                <th>Actions</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            {% for disaster in disasters %}
+                                <tr>
+                                    <td>{{ disaster.name }}</td>
+                                    <td>
+                                        {% if disaster.type == 'flood' %}
+                                            <span class="badge bg-info">Flood</span>
+                                        {% elif disaster.type == 'earthquake' %}
+                                            <span class="badge bg-danger">Earthquake</span>
+                                        {% elif disaster.type == 'fire' %}
+                                            <span class="badge bg-warning text-dark">Fire</span>
+                                        {% elif disaster.type == 'storm' %}
+                                            <span class="badge bg-primary">Storm</span>
+                                        {% elif disaster.type == 'landslide' %}
+                                            <span class="badge bg-secondary">Landslide</span>
+                                        {% else %}
+                                            <span class="badge bg-secondary">{{ disaster.type }}</span>
+                                        {% endif %}
+                                    </td>
+                                    <td>{{ disaster.location }}</td>
+                                    <td>
+                                        {% if disaster.severity == 'high' %}
+                                            <span class="badge bg-danger">High</span>
+                                        {% elif disaster.severity == 'medium' %}
+                                            <span class="badge bg-warning text-dark">Medium</span>
+                                        {% else %}
+                                            <span class="badge bg-success">Low</span>
+                                        {% endif %}
+                                    </td>
+                                    <td>{{ disaster.date_reported.strftime('%Y-%m-%d') }}</td>
+                                    <td>
+                                        {% if disaster.status == 'active' %}
+                                            <span class="badge bg-warning text-dark">Active</span>
+                                        {% else %}
+                                            <span class="badge bg-success">Resolved</span>
+                                        {% endif %}
+                                    </td>
+                                    <td>
+                                        <div class="dropdown">
+                                            <button class="btn btn-sm btn-outline-secondary dropdown-toggle" type="button" data-bs-toggle="dropdown">
+                                                Actions
+                                            </button>
+                                            <ul class="dropdown-menu">
+                                                <li>
+                                                    <button type="button" class="dropdown-item" data-bs-toggle="modal" data-bs-target="#disasterModal{{ disaster.id }}">
+                                                        <i class="fas fa-eye me-2"></i> View Details
+                                                    </button>
+                                                </li>
+                                                {% if disaster.status == 'active' and current_user.role == 'admin' %}
+                                                    <li>
+                                                        <form action="{{ url_for('resolve_disaster', id=disaster.id) }}" method="POST" class="d-inline">
+                                                            <button type="submit" class="dropdown-item">
+                                                                <i class="fas fa-check-circle me-2"></i> Mark as Resolved
+                                                            </button>
+                                                        </form>
+                                                    </li>
+                                                {% endif %}
+                                                {% if current_user.role == 'admin' %}
+                                                    <li>
+                                                        <a class="dropdown-item" href="{{ url_for('edit_disaster', id=disaster.id) }}">
+                                                            <i class="fas fa-edit me-2"></i> Edit
+                                                        </a>
+                                                    </li>
+                                                    <li><hr class="dropdown-divider"></li>
+                                                    <li>
+                                                        <form action="{{ url_for('delete_disaster', id=disaster.id) }}" method="POST" class="d-inline">
+                                                            <button type="submit" class="dropdown-item text-danger" onclick="return confirm('Are you sure you want to delete this disaster?')">
+                                                                <i class="fas fa-trash-alt me-2"></i> Delete
+                                                            </button>
+                                                        </form>
+                                                    </li>
+                                                {% endif %}
+                                            </ul>
+                                        </div>
+                                    </td>
+                                </tr>
+
+                                <!-- Modal for disaster details -->
+                                <div class="modal fade" id="disasterModal{{ disaster.id }}" tabindex="-1" aria-hidden="true">
+                                    <div class="modal-dialog">
+                                        <div class="modal-content">
+                                            <div class="modal-header">
+                                                <h5 class="modal-title">Disaster Details</h5>
+                                                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                                            </div>
+                                            <div class="modal-body">
+                                                <h5>{{ disaster.name }}</h5>
+                                                <p><strong>Type:</strong> {{ disaster.type }}</p>
+                                                <p><strong>Location:</strong> {{ disaster.location }}</p>
+                                                <p><strong>Severity:</strong> {{ disaster.severity }}</p>
+                                                <p><strong>Date Reported:</strong> {{ disaster.date_reported.strftime('%Y-%m-%d %H:%M') }}</p>
+                                                <p><strong>Status:</strong> {{ disaster.status }}</p>
+                                                <p><strong>Description:</strong> {{ disaster.description }}</p>
+
+                                                <div class="mt-4">
+                                                    <h6>Quick Actions</h6>
+                                                    <div class="list-group">
+                                                        <a href="{{ url_for('add_resource_request') }}" class="list-group-item list-group-item-action">
+                                                            <i class="fas fa-box me-2"></i> Request Resources
+                                                        </a>
+                                                        <a href="{{ url_for('volunteers') }}" class="list-group-item list-group-item-action">
+                                                            <i class="fas fa-hands-helping me-2"></i> Volunteer
+                                                        </a>
+                                                        <a href="{{ url_for('emergency_contacts') }}" class="list-group-item list-group-item-action">
+                                                            <i class="fas fa-phone me-2"></i> Emergency Contacts
+                                                        </a>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                            <div class="modal-footer">
+                                                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+                                                {% if current_user.role == 'admin' and disaster.status == 'active' %}
+                                                    <form action="{{ url_for('resolve_disaster', id=disaster.id) }}" method="POST" class="d-inline">
+                                                        <button type="submit" class="btn btn-success">Mark as Resolved</button>
+                                                    </form>
+                                                {% endif %}
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            {% endfor %}
+                        </tbody>
+                    </table>
+                </div>
+            {% else %}
+                <div class="alert alert-info">
+                    <i class="fas fa-info-circle me-2"></i> No disasters found.
+                </div>
+            {% endif %}
+        </div>
+    </div>
+</div>
+{% endblock %} 
